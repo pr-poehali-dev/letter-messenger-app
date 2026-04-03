@@ -1,28 +1,13 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import Avatar from './Avatar';
 import Icon from '@/components/ui/icon';
 import { useAuthContext } from '@/contexts/AuthContext';
-import { InviteCode } from '@/hooks/useAuth';
 
 const ProfilePanel: React.FC = () => {
-  const { user, getMyInvites } = useAuthContext();
+  const { user } = useAuthContext();
   const [editing, setEditing] = useState(false);
   const [name, setName] = useState(user?.name || '');
   const [bio, setBio] = useState(user?.bio || '');
-  const [invites, setInvites] = useState<InviteCode[]>([]);
-  const [invitesLoading, setInvitesLoading] = useState(false);
-  const [copiedCode, setCopiedCode] = useState('');
-
-  useEffect(() => {
-    setInvitesLoading(true);
-    getMyInvites().then(codes => { setInvites(codes); setInvitesLoading(false); });
-  }, [getMyInvites]);
-
-  const copyCode = (code: string) => {
-    navigator.clipboard.writeText(code);
-    setCopiedCode(code);
-    setTimeout(() => setCopiedCode(''), 2000);
-  };
 
   return (
     <div className="flex flex-col h-full p-6 overflow-y-auto">
@@ -124,70 +109,6 @@ const ProfilePanel: React.FC = () => {
             </button>
           ))}
         </div>
-      </div>
-
-      {/* Invite codes */}
-      <div className="mt-5">
-        <div className="flex items-center gap-2 mb-3 ml-1">
-          <Icon name="Ticket" size={14} className="text-purple-400" />
-          <span className="text-xs font-semibold text-white/50 uppercase tracking-wider">Мои приглашения</span>
-          <span className="text-xs text-white/30 ml-auto">
-            {invites.filter(c => !c.used).length} свободных
-          </span>
-        </div>
-
-        {invitesLoading ? (
-          <div className="flex justify-center py-4">
-            <Icon name="Loader" size={20} className="animate-spin text-white/30" />
-          </div>
-        ) : (
-          <div className="space-y-2">
-            {invites.map(invite => (
-              <div
-                key={invite.code}
-                className="flex items-center gap-3 px-4 py-3 rounded-2xl transition-all"
-                style={{
-                  background: invite.used ? 'rgba(255,255,255,0.03)' : 'rgba(155,93,229,0.1)',
-                  border: invite.used ? '1px solid rgba(255,255,255,0.05)' : '1px solid rgba(155,93,229,0.25)',
-                  opacity: invite.used ? 0.5 : 1,
-                }}
-              >
-                <span
-                  className="font-bold tracking-[0.2em] text-sm flex-1"
-                  style={{ color: invite.used ? 'rgba(255,255,255,0.3)' : '#c084fc' }}
-                >
-                  {invite.code}
-                </span>
-
-                {invite.used ? (
-                  <span className="text-xs text-white/30 flex items-center gap-1">
-                    <Icon name="CheckCircle" size={13} className="text-green-500/50" />
-                    Использован
-                  </span>
-                ) : (
-                  <button
-                    onClick={() => copyCode(invite.code)}
-                    className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold transition-all hover:scale-105"
-                    style={{ background: copiedCode === invite.code ? 'rgba(6,214,160,0.2)' : 'rgba(155,93,229,0.25)' }}
-                  >
-                    <Icon
-                      name={copiedCode === invite.code ? 'Check' : 'Copy'}
-                      size={13}
-                      className={copiedCode === invite.code ? 'text-green-400' : 'text-purple-300'}
-                    />
-                    <span className={copiedCode === invite.code ? 'text-green-400' : 'text-purple-300'}>
-                      {copiedCode === invite.code ? 'Скопировано' : 'Скопировать'}
-                    </span>
-                  </button>
-                )}
-              </div>
-            ))}
-          </div>
-        )}
-
-        <p className="text-xs text-white/25 mt-3 ml-1">
-          Поделитесь кодом с другом — каждый код одноразовый
-        </p>
       </div>
     </div>
   );

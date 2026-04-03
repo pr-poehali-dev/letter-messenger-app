@@ -9,34 +9,16 @@
       "bodyMatcher": "partial"
     },
     {
-      "name": "check_invite — пустой код",
+      "name": "POST register — пустые поля",
       "method": "POST",
       "path": "/",
-      "body": {"action": "check_invite", "invite_code": ""},
-      "expectedStatus": 400,
-      "expectedBody": {"error": "Введите код приглашения"},
-      "bodyMatcher": "partial"
-    },
-    {
-      "name": "check_invite — несуществующий код",
-      "method": "POST",
-      "path": "/",
-      "body": {"action": "check_invite", "invite_code": "FAKECODE"},
-      "expectedStatus": 404,
-      "expectedBody": {"error": "Код недействителен или уже использован"},
-      "bodyMatcher": "partial"
-    },
-    {
-      "name": "register — без инвайта",
-      "method": "POST",
-      "path": "/",
-      "body": {"action": "register", "name": "", "username": "", "email": "", "password": "", "invite_code": ""},
+      "body": {"action": "register", "name": "", "username": "", "email": "", "password": ""},
       "expectedStatus": 400,
       "expectedBody": {"error": "Заполните все поля"},
       "bodyMatcher": "partial"
     },
     {
-      "name": "login — неверный пароль",
+      "name": "POST login — неверный пароль",
       "method": "POST",
       "path": "/",
       "body": {"action": "login", "login": "notexist@test.com", "password": "wrongpass"},

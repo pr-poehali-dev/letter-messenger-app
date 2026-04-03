@@ -1,16 +1,14 @@
 import React, { createContext, useContext } from 'react';
-import { useAuth, User, InviteCode } from '@/hooks/useAuth';
+import { useAuth, User } from '@/hooks/useAuth';
 
 interface AuthContextType {
   user: User | null;
   loading: boolean;
   error: string | null;
-  register: (name: string, username: string, email: string, password: string, invite_code: string) => Promise<boolean>;
+  register: (name: string, username: string, email: string, password: string) => Promise<boolean>;
   login: (login: string, password: string) => Promise<boolean>;
   logout: () => Promise<void>;
   setError: (e: string | null) => void;
-  checkInvite: (code: string) => Promise<{ valid: boolean; invitedBy?: string; error?: string }>;
-  getMyInvites: () => Promise<InviteCode[]>;
 }
 
 const AuthContext = createContext<AuthContextType | null>(null);
