@@ -1,11 +1,13 @@
 import React, { useState } from 'react';
 import Avatar from './Avatar';
 import Icon from '@/components/ui/icon';
+import { useAuthContext } from '@/contexts/AuthContext';
 
 const ProfilePanel: React.FC = () => {
+  const { user } = useAuthContext();
   const [editing, setEditing] = useState(false);
-  const [name, setName] = useState('Алексей Громов');
-  const [bio, setBio] = useState('Разработчик • Москва 🌆');
+  const [name, setName] = useState(user?.name || '');
+  const [bio, setBio] = useState(user?.bio || '');
 
   return (
     <div className="flex flex-col h-full p-6 overflow-y-auto">

@@ -8,6 +8,8 @@ import ProfilePanel from '@/components/letter/ProfilePanel';
 import SettingsPanel from '@/components/letter/SettingsPanel';
 import NotificationsPanel from '@/components/letter/NotificationsPanel';
 import CallModal from '@/components/letter/CallModal';
+import AuthScreen from '@/components/letter/AuthScreen';
+import { useAuthContext } from '@/contexts/AuthContext';
 
 type Tab = 'chats' | 'search' | 'contacts' | 'notifications' | 'profile' | 'settings';
 
@@ -22,8 +24,37 @@ const navItems: { id: Tab; icon: string; label: string }[] = [
 const Index: React.FC = () => {
   const [tab, setTab] = useState<Tab>('chats');
   const [callTarget, setCallTarget] = useState<string | null>(null);
+  const { user, loading, error, register, login, logout, setError } = useAuthContext();
 
   const handleCall = (name: string) => setCallTarget(name);
+
+  if (loading) {
+    return (
+      <div className="w-screen h-screen flex items-center justify-center gradient-animated">
+        <div className="flex flex-col items-center gap-3">
+          <div
+            className="w-14 h-14 rounded-3xl flex items-center justify-center font-caveat font-bold text-2xl text-white animate-pulse"
+            style={{ background: 'linear-gradient(135deg, #9b5de5, #f15bb5)' }}
+          >
+            L
+          </div>
+          <p className="text-white/30 text-sm">Загрузка...</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (!user) {
+    return (
+      <AuthScreen
+        onRegister={register}
+        onLogin={login}
+        loading={loading}
+        error={error}
+        clearError={() => setError(null)}
+      />
+    );
+  }
 
   return (
     <div className="gradient-animated w-screen h-screen flex overflow-hidden font-golos">
@@ -93,8 +124,16 @@ const Index: React.FC = () => {
             onClick={() => setTab('profile')}
             className={`nav-item w-full ${tab === 'profile' ? 'active' : ''}`}
           >
-            <Avatar name="Алексей Громов" size="sm" online={true} />
+            <Avatar name={user.name} size="sm" online={true} />
             <span className="text-[10px] leading-none">Профиль</span>
+          </button>
+          <button
+            onClick={logout}
+            className="nav-item w-full mt-0.5"
+            title="Выйти"
+          >
+            <Icon name="LogOut" size={18} className="text-red-400/70" />
+            <span className="text-[10px] leading-none text-red-400/70">Выход</span>
           </button>
         </div>
       </nav>
