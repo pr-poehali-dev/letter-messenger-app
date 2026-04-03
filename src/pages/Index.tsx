@@ -24,7 +24,7 @@ const navItems: { id: Tab; icon: string; label: string }[] = [
 const Index: React.FC = () => {
   const [tab, setTab] = useState<Tab>('chats');
   const [callTarget, setCallTarget] = useState<string | null>(null);
-  const { user, loading, error, register, login, logout, setError } = useAuthContext();
+  const { user, loading, error, register, login, logout, setError, checkInvite } = useAuthContext();
 
   const handleCall = (name: string) => setCallTarget(name);
 
@@ -49,6 +49,7 @@ const Index: React.FC = () => {
       <AuthScreen
         onRegister={register}
         onLogin={login}
+        onCheckInvite={checkInvite}
         loading={loading}
         error={error}
         clearError={() => setError(null)}
